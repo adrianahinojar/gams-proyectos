@@ -1,0 +1,351 @@
+GAMS 45.7.0  64fbf3ce Jan 18, 2024          WEX-WEI x86 64bit/MS Windows - 04/08/24 20:41:33 Page 1
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+C o m p i l a t i o n
+
+
+   1  Sets
+   2      i  "Tipos de Materiales" /P_Blanco, P_Azul, D_Acrilico, R_Epoxi/
+   3      j  "Tipos de Mezcla" /Base, Especial/;
+   4   
+   5  Parameters
+   6      cantidad_disponible(i) "Cantidad disponible de cada tipo de material (litros)" /
+   7          P_Blanco 4000,
+   8          P_Azul 8000,
+   9          D_Acrilico 4500,
+  10          R_Epoxi 3000 /
+  11      coste_transporte(i) "Coste de transporte de cada tipo de material (€/litro)" /
+  12          P_Blanco 5.2,
+  13          P_Azul 7.5,
+  14          D_Acrilico 3.9,
+  15          R_Epoxi 5.1 /
+  16      coste_mezcla(j) "Coste de cada tipo de mezcla (€/litro)" /Base 5.7, Especial 6.3/
+  17      cantidad_minima_necesaria(j) "Cantidad mínima necesaria para cada tipo de mezcla (litros)" /Base 4500, Especial 7500/;
+  18  Positive Variables
+  19      x(i, j) "Cantidad de cada tipo de material utilizado en cada tipo de mezcla (litros)";
+  20   
+  21  Variables
+  22      costo_produccion "Costo total de producción de pintura (€)"
+  23      costo_transporte "Costo total de transporte de materiales (€)"
+  24      costo_total "Costo total de producción y transporte de pintura (€)";
+  25   
+  26  Equations
+  27      restriccion_cantidad_minima(j) "Restricción de cantidad mínima necesaria para cada tipo de mezcla"
+  28      restriccion_cantidad_disponible(i) "Restricción de cantidad disponible de cada tipo de material"
+  29      restriccion_coste_produccion "Restricción de coste total de producción"
+  30      restriccion_coste_transporte "Restricción de coste total de transporte"
+  31      restriccion_porcentaje_base "Restricción de porcentaje para la mezcla Base"
+  32      restriccion_porcentaje_disolvente_base "Restricción de porcentaje de disolvente para la mezcla Base"
+  33      restriccion_porcentaje_total_base "Restricción de porcentaje total para la mezcla Base"
+  34      restriccion_porcentaje_especial "Restricción de porcentaje para la mezcla Especial"
+  35      restriccion_porcentaje_resina_especial "Restricción de porcentaje de resina para la mezcla Especial"
+  36      restriccion_porcentaje_total_especial "Restricción de porcentaje total para la mezcla Especial"
+  37      restriccion_costo_total "Restricción de costo total";
+  38   
+  39  restriccion_cantidad_minima(j).. sum(i, x(i,j)) =e= cantidad_minima_necesaria(j);
+  40   
+  41  restriccion_cantidad_disponible(i).. sum(j, x(i,j)) =l= cantidad_disponible(i);
+  42   
+  43  restriccion_coste_produccion.. costo_produccion =e= sum((i, j), coste_mezcla(j)*x(i,j));
+  44   
+  45  restriccion_coste_transporte.. costo_transporte =e= sum((i, j), coste_transporte(i)*x(i,j));
+  46   
+  47  restriccion_porcentaje_base.. (x('P_Blanco','Base') + x('P_Azul','Base')) =l= 0.5 * sum(i, x(i, 'Base'));
+  48   
+  49  restriccion_porcentaje_disolvente_base.. (x('D_Acrilico','Base')) =g= 0.1 * sum(i, x('D_Acrilico', 'Base'));
+  50   
+  51  restriccion_porcentaje_total_base.. (x('P_Blanco','Base') + x('P_Azul','Base') + x('D_Acrilico','Base') + x('R_Epoxi','Base')) =g= 0.99 * sum(i, x(i, 'Base'));
+  52   
+  53  restriccion_porcentaje_especial.. (x('P_Blanco','Especial')) =g= 0.2 * sum(i, x(i, 'Especial'));
+  54   
+  55  restriccion_porcentaje_resina_especial.. (x('R_Epoxi','Especial') + x('D_Acrilico','Especial')) =g= 0.5 * (x('P_Blanco','Especial') + x('P_Azul','Especial'));
+  56   
+  57  restriccion_porcentaje_total_especial.. (x('P_Blanco','Especial') + x('P_Azul','Especial') + x('D_Acrilico','Especial') + x('R_Epoxi','Especial')) =g=0.98 * sum(i, x(i, 'Especial'));
+  58   
+  59  restriccion_costo_total.. costo_total =e= costo_produccion + costo_transporte;
+  60   
+  61  Model todas /all/;
+  62   
+  63  Solve todas using lp minimizing costo_total;
+  64   
+  65  Display x.l, costo_total.l;
+
+
+COMPILATION TIME     =        0.000 SECONDS      3 MB  45.7.0 64fbf3ce WEX-WEI
+GAMS 45.7.0  64fbf3ce Jan 18, 2024          WEX-WEI x86 64bit/MS Windows - 04/08/24 20:41:33 Page 2
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Equation Listing    SOLVE todas Using LP From line 63
+
+
+---- restriccion_cantidad_minima  =E=  Restricción de cantidad mínima necesaria para cada tipo de mezcla
+
+restriccion_cantidad_minima(Base)..  x(P_Blanco,Base) + x(P_Azul,Base) + x(D_Acrilico,Base) + x(R_Epoxi,Base) =E= 4500 ; (LHS = 0, INFES = 4500 ****)
+     
+restriccion_cantidad_minima(Especial)..  x(P_Blanco,Especial) + x(P_Azul,Especial) + x(D_Acrilico,Especial) + x(R_Epoxi,Especial) =E= 7500 ; (LHS = 0, INFES = 7500 ****)
+     
+
+---- restriccion_cantidad_disponible  =L=  Restricción de cantidad disponible de cada tipo de material
+
+restriccion_cantidad_disponible(P_Blanco)..  x(P_Blanco,Base) + x(P_Blanco,Especial) =L= 4000 ; (LHS = 0)
+     
+restriccion_cantidad_disponible(P_Azul)..  x(P_Azul,Base) + x(P_Azul,Especial) =L= 8000 ; (LHS = 0)
+     
+restriccion_cantidad_disponible(D_Acrilico)..  x(D_Acrilico,Base) + x(D_Acrilico,Especial) =L= 4500 ; (LHS = 0)
+     
+REMAINING ENTRY SKIPPED
+
+
+---- restriccion_coste_produccion  =E=  Restricción de coste total de producción
+
+restriccion_coste_produccion..  - 5.7*x(P_Blanco,Base) - 6.3*x(P_Blanco,Especial) - 5.7*x(P_Azul,Base) - 6.3*x(P_Azul,Especial) - 5.7*x(D_Acrilico,Base) - 6.3*x(D_Acrilico,Especial) - 5.7*x(R_Epoxi,Base) - 6.3*x(R_Epoxi,Especial) + costo_produccion =E= 0 ; (LHS = 0)
+     
+
+---- restriccion_coste_transporte  =E=  Restricción de coste total de transporte
+
+restriccion_coste_transporte..  - 5.2*x(P_Blanco,Base) - 5.2*x(P_Blanco,Especial) - 7.5*x(P_Azul,Base) - 7.5*x(P_Azul,Especial) - 3.9*x(D_Acrilico,Base) - 3.9*x(D_Acrilico,Especial) - 5.1*x(R_Epoxi,Base) - 5.1*x(R_Epoxi,Especial) + costo_transporte =E= 0 ; (LHS = 0)
+     
+
+---- restriccion_porcentaje_base  =L=  Restricción de porcentaje para la mezcla Base
+
+restriccion_porcentaje_base..  0.5*x(P_Blanco,Base) + 0.5*x(P_Azul,Base) - 0.5*x(D_Acrilico,Base) - 0.5*x(R_Epoxi,Base) =L= 0 ; (LHS = 0)
+     
+
+---- restriccion_porcentaje_disolvente_base  =G=  Restricción de porcentaje de disolvente para la mezcla Base
+
+restriccion_porcentaje_disolvente_base..  0.6*x(D_Acrilico,Base) =G= 0 ; (LHS = 0)
+     
+
+---- restriccion_porcentaje_total_base  =G=  Restricción de porcentaje total para la mezcla Base
+
+restriccion_porcentaje_total_base..  0.01*x(P_Blanco,Base) + 0.01*x(P_Azul,Base) + 0.01*x(D_Acrilico,Base) + 0.01*x(R_Epoxi,Base) =G= 0 ; (LHS = 0)
+     
+
+---- restriccion_porcentaje_especial  =G=  Restricción de porcentaje para la mezcla Especial
+
+restriccion_porcentaje_especial..  0.8*x(P_Blanco,Especial) - 0.2*x(P_Azul,Especial) - 0.2*x(D_Acrilico,Especial) - 0.2*x(R_Epoxi,Especial) =G= 0 ; (LHS = 0)
+     
+
+---- restriccion_porcentaje_resina_especial  =G=  Restricción de porcentaje de resina para la mezcla Especial
+
+restriccion_porcentaje_resina_especial..  - 0.5*x(P_Blanco,Especial) - 0.5*x(P_Azul,Especial) + x(D_Acrilico,Especial) + x(R_Epoxi,Especial) =G= 0 ; (LHS = 0)
+     
+
+---- restriccion_porcentaje_total_especial  =G=  Restricción de porcentaje total para la mezcla Especial
+
+restriccion_porcentaje_total_especial..  0.02*x(P_Blanco,Especial) + 0.02*x(P_Azul,Especial) + 0.02*x(D_Acrilico,Especial) + 0.02*x(R_Epoxi,Especial) =G= 0 ; (LHS = 0)
+     
+
+---- restriccion_costo_total  =E=  Restricción de costo total
+
+restriccion_costo_total..  - costo_produccion - costo_transporte + costo_total =E= 0 ; (LHS = 0)
+     
+GAMS 45.7.0  64fbf3ce Jan 18, 2024          WEX-WEI x86 64bit/MS Windows - 04/08/24 20:41:33 Page 3
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Column Listing      SOLVE todas Using LP From line 63
+
+
+---- x  Cantidad de cada tipo de material utilizado en cada tipo de mezcla (litros)
+
+x(P_Blanco,Base)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       restriccion_cantidad_minima(Base)
+        1       restriccion_cantidad_disponible(P_Blanco)
+       -5.7     restriccion_coste_produccion
+       -5.2     restriccion_coste_transporte
+        0.5     restriccion_porcentaje_base
+        0.01    restriccion_porcentaje_total_base
+
+x(P_Blanco,Especial)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       restriccion_cantidad_minima(Especial)
+        1       restriccion_cantidad_disponible(P_Blanco)
+       -6.3     restriccion_coste_produccion
+       -5.2     restriccion_coste_transporte
+        0.8     restriccion_porcentaje_especial
+       -0.5     restriccion_porcentaje_resina_especial
+        0.02    restriccion_porcentaje_total_especial
+
+x(P_Azul,Base)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       restriccion_cantidad_minima(Base)
+        1       restriccion_cantidad_disponible(P_Azul)
+       -5.7     restriccion_coste_produccion
+       -7.5     restriccion_coste_transporte
+        0.5     restriccion_porcentaje_base
+        0.01    restriccion_porcentaje_total_base
+
+REMAINING 5 ENTRIES SKIPPED
+
+---- costo_produccion  Costo total de producción de pintura (€)
+
+costo_produccion
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       restriccion_coste_produccion
+       -1       restriccion_costo_total
+
+
+---- costo_transporte  Costo total de transporte de materiales (€)
+
+costo_transporte
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       restriccion_coste_transporte
+       -1       restriccion_costo_total
+
+
+---- costo_total  Costo total de producción y transporte de pintura (€)
+
+costo_total
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       restriccion_costo_total
+
+GAMS 45.7.0  64fbf3ce Jan 18, 2024          WEX-WEI x86 64bit/MS Windows - 04/08/24 20:41:33 Page 4
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Range Statistics    SOLVE todas Using LP From line 63
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [ 3.000E+03, 8.000E+03] - Zero values observed as well
+Bound     [min, max] : [        NA,        NA] - Zero values observed as well
+Matrix    [min, max] : [ 1.000E-02, 7.500E+00]
+
+GAMS 45.7.0  64fbf3ce Jan 18, 2024          WEX-WEI x86 64bit/MS Windows - 04/08/24 20:41:33 Page 5
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Model Statistics    SOLVE todas Using LP From line 63
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS          11     SINGLE EQUATIONS           15
+BLOCKS OF VARIABLES           4     SINGLE VARIABLES           11
+NON ZERO ELEMENTS            58
+
+
+GENERATION TIME      =        0.016 SECONDS      4 MB  45.7.0 64fbf3ce WEX-WEI
+GAMS 45.7.0  64fbf3ce Jan 18, 2024          WEX-WEI x86 64bit/MS Windows - 04/08/24 20:41:33 Page 6
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Solution Report     SOLVE todas Using LP From line 63
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   todas               OBJECTIVE  costo_total
+     TYPE    LP                  DIRECTION  MINIMIZE
+     SOLVER  CPLEX               FROM LINE  63
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      1 Optimal
+**** OBJECTIVE VALUE           130300.0000
+
+ RESOURCE USAGE, LIMIT          0.000 10000000000.000
+ ITERATION COUNT, LIMIT         4    2147483647
+*** This solver runs with a community license.
+--- GMO setup time: 0.00s
+--- GMO memory 0.50 Mb (peak 0.50 Mb)
+--- Dictionary memory 0.00 Mb
+--- Cplex 22.1.1.0 link memory 0.00 Mb (peak 0.00 Mb)
+--- Starting Cplex
+
+
+--- LP status (1): optimal.
+--- Cplex Time: 0.00sec (det. 0.02 ticks)
+
+
+Optimal solution found
+Objective:       130300.000000
+
+
+---- EQU restriccion_cantidad_minima  Restricción de cantidad mínima necesaria para cada tipo de mezcla
+
+                LOWER          LEVEL          UPPER         MARGINAL
+
+Base          4500.0000      4500.0000      4500.0000        13.2000      
+Especial      7500.0000      7500.0000      7500.0000        13.8000      
+
+---- EQU restriccion_cantidad_disponible  Restricción de cantidad disponible de cada tipo de material
+
+                  LOWER          LEVEL          UPPER         MARGINAL
+
+P_Blanco          -INF         4000.0000      4000.0000        -2.3000      
+P_Azul            -INF          500.0000      8000.0000          .          
+D_Acrilico        -INF         4500.0000      4500.0000        -3.6000      
+R_Epoxi           -INF         3000.0000      3000.0000        -2.4000      
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU restricci~          .              .              .             1.0000      
+---- EQU restricci~          .              .              .             1.0000      
+---- EQU restricci~        -INF         -750.0000          .              .          
+---- EQU restricci~          .              .            +INF             .          
+---- EQU restricci~          .            45.0000        +INF             .          
+---- EQU restricci~          .          1500.0000        +INF             .          
+---- EQU restricci~          .          3000.0000        +INF             .          
+---- EQU restricci~          .           150.0000        +INF             .          
+---- EQU restricci~          .              .              .             1.0000      
+
+  restriccion_coste_produccion  Restricción de coste total de producción
+  restriccion_coste_transporte  Restricción de coste total de transporte
+  restriccion_porcentaje_base  Restricción de porcentaje para la mezcla Base
+  restriccion_porcentaje_disolvente_base  Restricción de porcentaje de disolvente para la mezcla Base
+  restriccion_porcentaje_total_base  Restricción de porcentaje total para la mezcla Base
+  restriccion_porcentaje_especial  Restricción de porcentaje para la mezcla Especial
+  restriccion_porcentaje_resina_especial  Restricción de porcentaje de resina para la mezcla Especial
+  restriccion_porcentaje_total_especial  Restricción de porcentaje total para la mezcla Especial
+  restriccion_costo_total  Restricción de costo total
+
+---- VAR x  Cantidad de cada tipo de material utilizado en cada tipo de mezcla (litros)
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+P_Blanco  .Base              .          1000.0000        +INF             .          
+P_Blanco  .Especial          .          3000.0000        +INF             .          
+P_Azul    .Base              .           500.0000        +INF             .          
+P_Azul    .Especial          .              .            +INF      8.881784E-16      
+D_Acrilico.Base              .              .            +INF      -1.33227E-15      
+D_Acrilico.Especial          .          4500.0000        +INF             .          
+R_Epoxi   .Base              .          3000.0000        +INF             .          
+R_Epoxi   .Especial          .              .            +INF      8.881784E-16      
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR costo_pro~        -INF        72900.0000        +INF             .          
+---- VAR costo_tra~        -INF        57400.0000        +INF             .          
+---- VAR costo_tot~        -INF       130300.0000        +INF             .          
+
+  costo_produccion  Costo total de producción de pintura (€)
+  costo_transporte  Costo total de transporte de materiales (€)
+  costo_total  Costo total de producción y transporte de pintura (€)
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+GAMS 45.7.0  64fbf3ce Jan 18, 2024          WEX-WEI x86 64bit/MS Windows - 04/08/24 20:41:33 Page 7
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+E x e c u t i o n
+
+
+----     65 VARIABLE x.L  Cantidad de cada tipo de material utilizado en cada tipo de mezcla (litros)
+
+                  Base    Especial
+
+P_Blanco      1000.000    3000.000
+P_Azul         500.000
+D_Acrilico                4500.000
+R_Epoxi       3000.000
+
+
+----     65 VARIABLE costo_total.L         =   130300.000  Costo total de producción y transporte de pintura (€)
+
+
+EXECUTION TIME       =        0.047 SECONDS      4 MB  45.7.0 64fbf3ce WEX-WEI
+
+
+USER: Course License                                 S240202|0002AO-GEN
+      University Rey Juan Carlos, Infomation Technology         DCE3239
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      C:\2�\2� cuatri\MOEG\Practicas\GAMS\Practica 1\Ej4.gms
+Output     C:\2�\2� cuatri\MOEG\Practicas\GAMS\Practica 1\Ej4.lst

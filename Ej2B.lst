@@ -1,0 +1,299 @@
+GAMS 45.7.0  64fbf3ce Jan 18, 2024          WEX-WEI x86 64bit/MS Windows - 03/21/24 13:53:54 Page 1
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+C o m p i l a t i o n
+
+
+   1  Sets
+   2      i  "desarrolladores" /d1*d5/
+   3      j  "proyectos" /p1*p5/;
+   4   
+   5   
+   6  Parameters
+   7      tiempo(i,j)  "Tiempo estimado para cada proyecto j por cada desarrollador i"
+   8              / d1.p1 38, d1.p2 41, d1.p3 43, d1.p4 32, d1.p5 48
+   9                d2.p1 27, d2.p2 21, d2.p3 28, d2.p4 16, d2.p5 26
+  10                d3.p1 40, d3.p2 36, d3.p3 31, d3.p4 23, d3.p5 32
+  11                d4.p1 39, d4.p2 28, d4.p3 39, d4.p4 27, d4.p5 35
+  12                d5.p1 32, d5.p2 25, d5.p3 40, d5.p4 27, d5.p5 37 /;
+  13   
+  14   
+  15  Binary Variable
+  16      x(i,j)  "1 si el desarrollador i realiza el proyecto j, y 0 cuando no";
+  17   
+  18  Variable
+  19      z   "Tiempo total empleado por los desarrolladores";
+  20   
+  21  Equations
+  22  funcionobjetivo "Minimizar el tiempo total empleado"
+  23      asignacionDesarrollador(i) "Cada proyecto se asigna a un √∫nico desarrollador"
+  24      asignacionProyecto(j) "Cada desarrollador trabaja en un solo proyecto"
+  25      maxhorastrabajadas(i) "No exceder el m√°ximo de horas de trabajo";
+  26   
+  27  funcionobjetivo.. z =e= sum((i,j), tiempo(i,j)*x(i,j));
+  28   
+  29  asignacionDesarrollador(i).. sum(j, x(i,j)) =e= 1;
+  30   
+  31  asignacionProyecto(j).. sum(i, x(i,j)) =e= 1;
+  32   
+  33  maxhorastrabajadas(i).. sum(j, tiempo(i,j)*x(i,j)) =l= 40;
+  34   
+  35  Model todas /all/;
+  36  Solve todas using mip minimizing z;
+  37  display z.l, x.l
+
+
+COMPILATION TIME     =        0.000 SECONDS      3 MB  45.7.0 64fbf3ce WEX-WEI
+GAMS 45.7.0  64fbf3ce Jan 18, 2024          WEX-WEI x86 64bit/MS Windows - 03/21/24 13:53:54 Page 2
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Equation Listing    SOLVE todas Using MIP From line 36
+
+
+---- funcionobjetivo  =E=  Minimizar el tiempo total empleado
+
+funcionobjetivo..  - 38*x(d1,p1) - 41*x(d1,p2) - 43*x(d1,p3) - 32*x(d1,p4) - 48*x(d1,p5) - 27*x(d2,p1) - 21*x(d2,p2) - 28*x(d2,p3) - 16*x(d2,p4) - 26*x(d2,p5) - 40*x(d3,p1) - 36*x(d3,p2) - 31*x(d3,p3) - 23*x(d3,p4) - 32*x(d3,p5) - 39*x(d4,p1) - 28*x(d4,p2) - 39*x(d4,p3) - 27*x(d4,p4) - 35*x(d4,p5) - 32*x(d5,p1) - 25*x(d5,p2) - 40*x(d5,p3) - 27*x(d5,p4) - 37*x(d5,p5) + z =E= 0 ; (LHS = 0)
+     
+
+---- asignacionDesarrollador  =E=  Cada proyecto se asigna a un √∫nico desarrollador
+
+asignacionDesarrollador(d1)..  x(d1,p1) + x(d1,p2) + x(d1,p3) + x(d1,p4) + x(d1,p5) =E= 1 ; (LHS = 0, INFES = 1 ****)
+     
+asignacionDesarrollador(d2)..  x(d2,p1) + x(d2,p2) + x(d2,p3) + x(d2,p4) + x(d2,p5) =E= 1 ; (LHS = 0, INFES = 1 ****)
+     
+asignacionDesarrollador(d3)..  x(d3,p1) + x(d3,p2) + x(d3,p3) + x(d3,p4) + x(d3,p5) =E= 1 ; (LHS = 0, INFES = 1 ****)
+     
+REMAINING 2 ENTRIES SKIPPED
+
+
+---- asignacionProyecto  =E=  Cada desarrollador trabaja en un solo proyecto
+
+asignacionProyecto(p1)..  x(d1,p1) + x(d2,p1) + x(d3,p1) + x(d4,p1) + x(d5,p1) =E= 1 ; (LHS = 0, INFES = 1 ****)
+     
+asignacionProyecto(p2)..  x(d1,p2) + x(d2,p2) + x(d3,p2) + x(d4,p2) + x(d5,p2) =E= 1 ; (LHS = 0, INFES = 1 ****)
+     
+asignacionProyecto(p3)..  x(d1,p3) + x(d2,p3) + x(d3,p3) + x(d4,p3) + x(d5,p3) =E= 1 ; (LHS = 0, INFES = 1 ****)
+     
+REMAINING 2 ENTRIES SKIPPED
+
+
+---- maxhorastrabajadas  =L=  No exceder el m√°ximo de horas de trabajo
+
+maxhorastrabajadas(d1)..  38*x(d1,p1) + 41*x(d1,p2) + 43*x(d1,p3) + 32*x(d1,p4) + 48*x(d1,p5) =L= 40 ; (LHS = 0)
+     
+maxhorastrabajadas(d2)..  27*x(d2,p1) + 21*x(d2,p2) + 28*x(d2,p3) + 16*x(d2,p4) + 26*x(d2,p5) =L= 40 ; (LHS = 0)
+     
+maxhorastrabajadas(d3)..  40*x(d3,p1) + 36*x(d3,p2) + 31*x(d3,p3) + 23*x(d3,p4) + 32*x(d3,p5) =L= 40 ; (LHS = 0)
+     
+REMAINING 2 ENTRIES SKIPPED
+
+GAMS 45.7.0  64fbf3ce Jan 18, 2024          WEX-WEI x86 64bit/MS Windows - 03/21/24 13:53:54 Page 3
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Column Listing      SOLVE todas Using MIP From line 36
+
+
+---- x  1 si el desarrollador i realiza el proyecto j, y 0 cuando no
+
+x(d1,p1)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+      -38       funcionobjetivo
+        1       asignacionDesarrollador(d1)
+        1       asignacionProyecto(p1)
+       38       maxhorastrabajadas(d1)
+
+x(d1,p2)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+      -41       funcionobjetivo
+        1       asignacionDesarrollador(d1)
+        1       asignacionProyecto(p2)
+       41       maxhorastrabajadas(d1)
+
+x(d1,p3)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+      -43       funcionobjetivo
+        1       asignacionDesarrollador(d1)
+        1       asignacionProyecto(p3)
+       43       maxhorastrabajadas(d1)
+
+REMAINING 22 ENTRIES SKIPPED
+
+---- z  Tiempo total empleado por los desarrolladores
+
+z
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       funcionobjetivo
+
+GAMS 45.7.0  64fbf3ce Jan 18, 2024          WEX-WEI x86 64bit/MS Windows - 03/21/24 13:53:54 Page 4
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Range Statistics    SOLVE todas Using MIP From line 36
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [ 1.000E+00, 4.000E+01] - Zero values observed as well
+Bound     [min, max] : [ 1.000E+00, 1.000E+00] - Zero values observed as well
+Matrix    [min, max] : [ 1.000E+00, 4.800E+01]
+
+GAMS 45.7.0  64fbf3ce Jan 18, 2024          WEX-WEI x86 64bit/MS Windows - 03/21/24 13:53:54 Page 5
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Model Statistics    SOLVE todas Using MIP From line 36
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           4     SINGLE EQUATIONS           16
+BLOCKS OF VARIABLES           2     SINGLE VARIABLES           26
+NON ZERO ELEMENTS           101     DISCRETE VARIABLES         25
+
+
+GENERATION TIME      =        0.000 SECONDS      4 MB  45.7.0 64fbf3ce WEX-WEI
+GAMS 45.7.0  64fbf3ce Jan 18, 2024          WEX-WEI x86 64bit/MS Windows - 03/21/24 13:53:54 Page 6
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Solution Report     SOLVE todas Using MIP From line 36
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   todas               OBJECTIVE  z
+     TYPE    MIP                 DIRECTION  MINIMIZE
+     SOLVER  CPLEX               FROM LINE  36
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      1 Optimal
+**** OBJECTIVE VALUE              145.0000
+
+ RESOURCE USAGE, LIMIT          0.000 10000000000.000
+ ITERATION COUNT, LIMIT         4    2147483647
+*** This solver runs with a community license.
+--- GMO setup time: 0.00s
+--- GMO memory 0.50 Mb (peak 0.50 Mb)
+--- Dictionary memory 0.00 Mb
+--- Cplex 22.1.1.0 link memory 0.00 Mb (peak 0.00 Mb)
+--- Starting Cplex
+
+
+--- MIP status (101): integer optimal solution.
+--- Cplex Time: 0.00sec (det. 0.14 ticks)
+
+--- Returning a primal only solution to GAMS (marginals all set to NA).
+--- Fixing integer variables and solving final LP...
+
+
+--- Fixed MIP status (1): optimal.
+--- Cplex Time: 0.00sec (det. 0.02 ticks)
+
+
+Proven optimal solution
+MIP Solution:          145.000000    (4 iterations, 0 nodes)
+Final Solve:           145.000000    (0 iterations)
+
+Best possible:         145.000000
+Absolute gap:            0.000000
+Relative gap:            0.000000
+
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU funcionob~          .              .              .             1.0000      
+
+  funcionobjetivo  Minimizar el tiempo total empleado
+
+---- EQU asignacionDesarrollador  Cada proyecto se asigna a un √∫nico desarrollador
+
+          LOWER          LEVEL          UPPER         MARGINAL
+
+d1         1.0000         1.0000         1.0000          .          
+d2         1.0000         1.0000         1.0000          .          
+d3         1.0000         1.0000         1.0000          .          
+d4         1.0000         1.0000         1.0000          .          
+d5         1.0000         1.0000         1.0000          .          
+
+---- EQU asignacionProyecto  Cada desarrollador trabaja en un solo proyecto
+
+          LOWER          LEVEL          UPPER         MARGINAL
+
+p1         1.0000         1.0000         1.0000          .          
+p2         1.0000         1.0000         1.0000          .          
+p3         1.0000         1.0000         1.0000          .          
+p4         1.0000         1.0000         1.0000          .          
+p5         1.0000         1.0000         1.0000          .          
+
+---- EQU maxhorastrabajadas  No exceder el m√°ximo de horas de trabajo
+
+          LOWER          LEVEL          UPPER         MARGINAL
+
+d1        -INF           38.0000        40.0000          .          
+d2        -INF           16.0000        40.0000          .          
+d3        -INF           31.0000        40.0000          .          
+d4        -INF           35.0000        40.0000          .          
+d5        -INF           25.0000        40.0000          .          
+
+---- VAR x  1 si el desarrollador i realiza el proyecto j, y 0 cuando no
+
+             LOWER          LEVEL          UPPER         MARGINAL
+
+d1.p1          .             1.0000         1.0000        38.0000      
+d1.p2          .              .             1.0000        41.0000      
+d1.p3          .              .             1.0000        43.0000      
+d1.p4          .              .             1.0000        32.0000      
+d1.p5          .              .             1.0000        48.0000      
+d2.p1          .              .             1.0000        27.0000      
+d2.p2          .              .             1.0000        21.0000      
+d2.p3          .              .             1.0000        28.0000      
+d2.p4          .             1.0000         1.0000        16.0000      
+d2.p5          .              .             1.0000        26.0000      
+d3.p1          .              .             1.0000        40.0000      
+d3.p2          .              .             1.0000        36.0000      
+d3.p3          .             1.0000         1.0000        31.0000      
+d3.p4          .              .             1.0000        23.0000      
+d3.p5          .              .             1.0000        32.0000      
+d4.p1          .              .             1.0000        39.0000      
+d4.p2          .              .             1.0000        28.0000      
+d4.p3          .              .             1.0000        39.0000      
+d4.p4          .              .             1.0000        27.0000      
+d4.p5          .             1.0000         1.0000        35.0000      
+d5.p1          .              .             1.0000        32.0000      
+d5.p2          .             1.0000         1.0000        25.0000      
+d5.p3          .              .             1.0000        40.0000      
+d5.p4          .              .             1.0000        27.0000      
+d5.p5          .              .             1.0000        37.0000      
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR z                 -INF          145.0000        +INF             .          
+
+  z  Tiempo total empleado por los desarrolladores
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+GAMS 45.7.0  64fbf3ce Jan 18, 2024          WEX-WEI x86 64bit/MS Windows - 03/21/24 13:53:54 Page 7
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+E x e c u t i o n
+
+
+----     37 VARIABLE z.L                   =      145.000  Tiempo total empleado por los desarrolladores
+
+----     37 VARIABLE x.L  1 si el desarrollador i realiza el proyecto j, y 0 cuando no
+
+            p1          p2          p3          p4          p5
+
+d1       1.000
+d2                                           1.000
+d3                               1.000
+d4                                                       1.000
+d5                   1.000
+
+
+
+EXECUTION TIME       =        0.032 SECONDS      4 MB  45.7.0 64fbf3ce WEX-WEI
+
+
+USER: Course License                                 S240202|0002AO-GEN
+      University Rey Juan Carlos, Infomation Technology         DCE3239
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      C:\2∫\2∫ cuatri\MOEG\Practicas\GAMS\Practica 1\Ej2B.gms
+Output     C:\2∫\2∫ cuatri\MOEG\Practicas\GAMS\Practica 1\Ej2B.lst

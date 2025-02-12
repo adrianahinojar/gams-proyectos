@@ -1,0 +1,253 @@
+GAMS 45.7.0  64fbf3ce Jan 18, 2024          WEX-WEI x86 64bit/MS Windows - 03/21/24 14:21:53 Page 1
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+C o m p i l a t i o n
+
+
+   1  Sets
+   2      a "ambulancias" /A1, A2, A3/
+   3      h "hospitales" /H1, H2, H3, H4, H5/;
+   4   
+   5   
+   6  Table
+   7  capacidad(a,h) "Cantidad de vacunas que cada ambulancia puede transportar a cada hospital"
+   8      H1  H2  H3  H4  H5
+   9  A1  10  8   6   9   12
+  10  A2  5   3   8   4   10
+  11  A3  7   9   6   10  4;
+  12   
+  13  Parameter viajes_max(a) "Número de viajes máximo que puede hacer cada ambulancia"
+  14  /A1  50
+  15  A2  90
+  16  A3  60/;
+  17   
+  18  Parameter ambulancias_max(h) "Número máximo de ambulancias que puede recibir cada hospital"
+  19  /H1 100
+  20  H2 80
+  21  H3 70
+  22  H4 40
+  23  H5 20/;
+  24   
+  25  Positive Variables
+  26      x(a, h) "Número de viajes que cada ambulancia realiza a cada hospital";
+  27   
+  28  Variable z "Cantidad total de vacunas distribuidas";
+  29   
+  30  Equations
+  31      max_vacunas "Maximizar la cantidad total de vacunas distribuidas"
+  32      max_viajes_amb(a) "Restricción de número máximo de viajes por ambulancia"
+  33      max_amb_hosp(h) "Restricción de número máximo de ambulancias por hospital";
+  34   
+  35  max_vacunas.. z =e= sum((a, h), x(a, h) * capacidad(a, h));
+  36   
+  37  max_viajes_amb(a).. sum(h, x(a, h)) =l= viajes_max(a);
+  38   
+  39  max_amb_hosp(h).. sum(a, x(a, h)) =l= ambulancias_max(h);
+  40   
+  41  Model todas /all/;
+  42  Solve todas using LP maximizing z;
+  43  display x.l,z.l
+
+
+COMPILATION TIME     =        0.000 SECONDS      3 MB  45.7.0 64fbf3ce WEX-WEI
+GAMS 45.7.0  64fbf3ce Jan 18, 2024          WEX-WEI x86 64bit/MS Windows - 03/21/24 14:21:53 Page 2
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Equation Listing    SOLVE todas Using LP From line 42
+
+
+---- max_vacunas  =E=  Maximizar la cantidad total de vacunas distribuidas
+
+max_vacunas..  - 10*x(A1,H1) - 8*x(A1,H2) - 6*x(A1,H3) - 9*x(A1,H4) - 12*x(A1,H5) - 5*x(A2,H1) - 3*x(A2,H2) - 8*x(A2,H3) - 4*x(A2,H4) - 10*x(A2,H5) - 7*x(A3,H1) - 9*x(A3,H2) - 6*x(A3,H3) - 10*x(A3,H4) - 4*x(A3,H5) + z =E= 0 ; (LHS = 0)
+     
+
+---- max_viajes_amb  =L=  Restricción de número máximo de viajes por ambulancia
+
+max_viajes_amb(A1)..  x(A1,H1) + x(A1,H2) + x(A1,H3) + x(A1,H4) + x(A1,H5) =L= 50 ; (LHS = 0)
+     
+max_viajes_amb(A2)..  x(A2,H1) + x(A2,H2) + x(A2,H3) + x(A2,H4) + x(A2,H5) =L= 90 ; (LHS = 0)
+     
+max_viajes_amb(A3)..  x(A3,H1) + x(A3,H2) + x(A3,H3) + x(A3,H4) + x(A3,H5) =L= 60 ; (LHS = 0)
+     
+
+---- max_amb_hosp  =L=  Restricción de número máximo de ambulancias por hospital
+
+max_amb_hosp(H1)..  x(A1,H1) + x(A2,H1) + x(A3,H1) =L= 100 ; (LHS = 0)
+     
+max_amb_hosp(H2)..  x(A1,H2) + x(A2,H2) + x(A3,H2) =L= 80 ; (LHS = 0)
+     
+max_amb_hosp(H3)..  x(A1,H3) + x(A2,H3) + x(A3,H3) =L= 70 ; (LHS = 0)
+     
+REMAINING 2 ENTRIES SKIPPED
+
+GAMS 45.7.0  64fbf3ce Jan 18, 2024          WEX-WEI x86 64bit/MS Windows - 03/21/24 14:21:53 Page 3
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Column Listing      SOLVE todas Using LP From line 42
+
+
+---- x  Número de viajes que cada ambulancia realiza a cada hospital
+
+x(A1,H1)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+      -10       max_vacunas
+        1       max_viajes_amb(A1)
+        1       max_amb_hosp(H1)
+
+x(A1,H2)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -8       max_vacunas
+        1       max_viajes_amb(A1)
+        1       max_amb_hosp(H2)
+
+x(A1,H3)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -6       max_vacunas
+        1       max_viajes_amb(A1)
+        1       max_amb_hosp(H3)
+
+REMAINING 12 ENTRIES SKIPPED
+
+---- z  Cantidad total de vacunas distribuidas
+
+z
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       max_vacunas
+
+GAMS 45.7.0  64fbf3ce Jan 18, 2024          WEX-WEI x86 64bit/MS Windows - 03/21/24 14:21:53 Page 4
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Range Statistics    SOLVE todas Using LP From line 42
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [ 2.000E+01, 1.000E+02] - Zero values observed as well
+Bound     [min, max] : [        NA,        NA] - Zero values observed as well
+Matrix    [min, max] : [ 1.000E+00, 1.200E+01]
+
+GAMS 45.7.0  64fbf3ce Jan 18, 2024          WEX-WEI x86 64bit/MS Windows - 03/21/24 14:21:53 Page 5
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Model Statistics    SOLVE todas Using LP From line 42
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           3     SINGLE EQUATIONS            9
+BLOCKS OF VARIABLES           2     SINGLE VARIABLES           16
+NON ZERO ELEMENTS            46
+
+
+GENERATION TIME      =        0.000 SECONDS      4 MB  45.7.0 64fbf3ce WEX-WEI
+GAMS 45.7.0  64fbf3ce Jan 18, 2024          WEX-WEI x86 64bit/MS Windows - 03/21/24 14:21:53 Page 6
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Solution Report     SOLVE todas Using LP From line 42
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   todas               OBJECTIVE  z
+     TYPE    LP                  DIRECTION  MAXIMIZE
+     SOLVER  CPLEX               FROM LINE  42
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      1 Optimal
+**** OBJECTIVE VALUE             1840.0000
+
+ RESOURCE USAGE, LIMIT          0.000 10000000000.000
+ ITERATION COUNT, LIMIT         6    2147483647
+*** This solver runs with a community license.
+--- GMO setup time: 0.00s
+--- GMO memory 0.50 Mb (peak 0.50 Mb)
+--- Dictionary memory 0.00 Mb
+--- Cplex 22.1.1.0 link memory 0.00 Mb (peak 0.00 Mb)
+--- Starting Cplex
+
+
+--- LP status (1): optimal.
+--- Cplex Time: 0.00sec (det. 0.02 ticks)
+
+
+Optimal solution found
+Objective:         1840.000000
+
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU max_vacun~          .              .              .             1.0000      
+
+  max_vacunas  Maximizar la cantidad total de vacunas distribuidas
+
+---- EQU max_viajes_amb  Restricción de número máximo de viajes por ambulancia
+
+          LOWER          LEVEL          UPPER         MARGINAL
+
+A1        -INF           50.0000        50.0000        10.0000      
+A2        -INF           90.0000        90.0000         8.0000      
+A3        -INF           60.0000        60.0000         9.0000      
+
+---- EQU max_amb_hosp  Restricción de número máximo de ambulancias por hospital
+
+          LOWER          LEVEL          UPPER         MARGINAL
+
+H1        -INF           50.0000       100.0000          .          
+H2        -INF           20.0000        80.0000          .          
+H3        -INF           70.0000        70.0000          .          
+H4        -INF           40.0000        40.0000         1.0000      
+H5        -INF           20.0000        20.0000         2.0000      
+
+---- VAR x  Número de viajes que cada ambulancia realiza a cada hospital
+
+             LOWER          LEVEL          UPPER         MARGINAL
+
+A1.H1          .            50.0000        +INF             .          
+A1.H2          .              .            +INF           -2.0000      
+A1.H3          .              .            +INF           -4.0000      
+A1.H4          .              .            +INF           -2.0000      
+A1.H5          .              .            +INF            EPS         
+A2.H1          .              .            +INF           -3.0000      
+A2.H2          .              .            +INF           -5.0000      
+A2.H3          .            70.0000        +INF             .          
+A2.H4          .              .            +INF           -5.0000      
+A2.H5          .            20.0000        +INF             .          
+A3.H1          .              .            +INF           -2.0000      
+A3.H2          .            20.0000        +INF             .          
+A3.H3          .              .            +INF           -3.0000      
+A3.H4          .            40.0000        +INF             .          
+A3.H5          .              .            +INF           -7.0000      
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR z                 -INF         1840.0000        +INF             .          
+
+  z  Cantidad total de vacunas distribuidas
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+GAMS 45.7.0  64fbf3ce Jan 18, 2024          WEX-WEI x86 64bit/MS Windows - 03/21/24 14:21:53 Page 7
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+E x e c u t i o n
+
+
+----     43 VARIABLE x.L  Número de viajes que cada ambulancia realiza a cada hospital
+
+            H1          H2          H3          H4          H5
+
+A1      50.000
+A2                              70.000                  20.000
+A3                  20.000                  40.000
+
+
+----     43 VARIABLE z.L                   =     1840.000  Cantidad total de vacunas distribuidas
+
+
+EXECUTION TIME       =        0.031 SECONDS      4 MB  45.7.0 64fbf3ce WEX-WEI
+
+
+USER: Course License                                 S240202|0002AO-GEN
+      University Rey Juan Carlos, Infomation Technology         DCE3239
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      C:\2�\2� cuatri\MOEG\Practicas\GAMS\Practica 1\Ej3.gms
+Output     C:\2�\2� cuatri\MOEG\Practicas\GAMS\Practica 1\Ej3.lst
