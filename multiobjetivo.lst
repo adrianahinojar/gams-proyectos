@@ -1,0 +1,595 @@
+GAMS 45.7.0  64fbf3ce Jan 18, 2024          WEX-WEI x86 64bit/MS Windows - 04/04/24 20:48:14 Page 1
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+C o m p i l a t i o n
+
+
+   1  Sets
+   2      Ingredientes /Cabra, Oveja/;
+   3   
+   4  Parameters
+   5      Costo(Ingredientes)
+   6          /Cabra 0.3
+   7          Oveja 0.4/,
+   8      Mano_de_obra(Ingredientes)
+   9          /Cabra 4
+  10          Oveja 2/,
+  11      Grasa(Ingredientes)
+  12          /Cabra 8
+  13          Oveja 20/;
+  14   
+  15  Variables
+  16      x1 "Cantidad de leche de cabra utilizada en la producci처n del queso"
+  17      x2 "Cantidad de leche de oveja utilizada en la producci처n del queso"
+  18      z1 "Coste de producci처n"
+  19      z2 "Mano de obra"
+  20      z3 "Porcentaje de grasa";
+  21   
+  22   
+  23  Positive Variables x1, x2;
+  24   
+  25  Equations
+  26      Coste_de_produccion
+  27      Mano_de_obra_total
+  28      Porcentaje_de_grasa
+  29      Limite_mano_de_obra
+  30      Limite_leche_cabra
+  31      Contenido_grasa_minimo;
+  32   
+  33  Coste_de_produccion.. 0.3 * x1 + 0.4 * x2 =e= z1;
+  34   
+  35  Mano_de_obra_total.. 4 * x1 + 2 * x2 =e= z2;
+  36   
+  37  Porcentaje_de_grasa.. 0.08 * x1 + 0.2 * x2 =e= z3;
+  38   
+  39  Limite_mano_de_obra.. 4 * x1 + 2 * x2 =l= 15;
+  40   
+  41  Limite_leche_cabra.. x1 =l= 3;
+  42   
+  43  Contenido_grasa_minimo.. 0.08 * x1 + 0.2 * x2 =g= 0.35;
+  44   
+  45  Model Queso /all/;
+  46  solve Queso using MIP minimizing z1;
+  47  display z1.l, x1.l, x2.l;
+  48  solve Queso using MIP minimizing z2;
+  49  display z2.l, x1.l, x2.l;
+  50  solve Queso using MIP maximizing z3;
+  51  display z3.l,x1.l, x2.l;
+
+
+COMPILATION TIME     =        0.000 SECONDS      3 MB  45.7.0 64fbf3ce WEX-WEI
+GAMS 45.7.0  64fbf3ce Jan 18, 2024          WEX-WEI x86 64bit/MS Windows - 04/04/24 20:48:14 Page 2
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Equation Listing    SOLVE Queso Using MIP From line 46
+
+
+---- Coste_de_produccion  =E=  
+
+Coste_de_produccion..  0.3*x1 + 0.4*x2 - z1 =E= 0 ; (LHS = 0)
+     
+
+---- Mano_de_obra_total  =E=  
+
+Mano_de_obra_total..  4*x1 + 2*x2 - z2 =E= 0 ; (LHS = 0)
+     
+
+---- Porcentaje_de_grasa  =E=  
+
+Porcentaje_de_grasa..  0.08*x1 + 0.2*x2 - z3 =E= 0 ; (LHS = 0)
+     
+
+---- Limite_mano_de_obra  =L=  
+
+Limite_mano_de_obra..  4*x1 + 2*x2 =L= 15 ; (LHS = 0)
+     
+
+---- Limite_leche_cabra  =L=  
+
+Limite_leche_cabra..  x1 =L= 3 ; (LHS = 0)
+     
+
+---- Contenido_grasa_minimo  =G=  
+
+Contenido_grasa_minimo..  0.08*x1 + 0.2*x2 =G= 0.35 ; (LHS = 0, INFES = 0.35 ****)
+     
+GAMS 45.7.0  64fbf3ce Jan 18, 2024          WEX-WEI x86 64bit/MS Windows - 04/04/24 20:48:14 Page 3
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Column Listing      SOLVE Queso Using MIP From line 46
+
+
+---- x1  Cantidad de leche de cabra utilizada en la producci처n del queso
+
+x1
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        0.3     Coste_de_produccion
+        4       Mano_de_obra_total
+        0.08    Porcentaje_de_grasa
+        4       Limite_mano_de_obra
+        1       Limite_leche_cabra
+        0.08    Contenido_grasa_minimo
+
+
+---- x2  Cantidad de leche de oveja utilizada en la producci처n del queso
+
+x2
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        0.4     Coste_de_produccion
+        2       Mano_de_obra_total
+        0.2     Porcentaje_de_grasa
+        2       Limite_mano_de_obra
+        0.2     Contenido_grasa_minimo
+
+
+---- z1  Coste de producci처n
+
+z1
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+       -1       Coste_de_produccion
+
+
+---- z2  Mano de obra
+
+z2
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+       -1       Mano_de_obra_total
+
+
+---- z3  Porcentaje de grasa
+
+z3
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+       -1       Porcentaje_de_grasa
+
+GAMS 45.7.0  64fbf3ce Jan 18, 2024          WEX-WEI x86 64bit/MS Windows - 04/04/24 20:48:14 Page 4
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Range Statistics    SOLVE Queso Using MIP From line 46
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [ 3.500E-01, 1.500E+01] - Zero values observed as well
+Bound     [min, max] : [        NA,        NA] - Zero values observed as well
+Matrix    [min, max] : [ 8.000E-02, 4.000E+00]
+
+GAMS 45.7.0  64fbf3ce Jan 18, 2024          WEX-WEI x86 64bit/MS Windows - 04/04/24 20:48:14 Page 5
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Model Statistics    SOLVE Queso Using MIP From line 46
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           6     SINGLE EQUATIONS            6
+BLOCKS OF VARIABLES           5     SINGLE VARIABLES            5
+NON ZERO ELEMENTS            14
+
+
+GENERATION TIME      =        0.000 SECONDS      4 MB  45.7.0 64fbf3ce WEX-WEI
+GAMS 45.7.0  64fbf3ce Jan 18, 2024          WEX-WEI x86 64bit/MS Windows - 04/04/24 20:48:14 Page 6
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Solution Report     SOLVE Queso Using MIP From line 46
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   Queso               OBJECTIVE  z1
+     TYPE    MIP                 DIRECTION  MINIMIZE
+     SOLVER  CPLEX               FROM LINE  46
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      1 Optimal
+**** OBJECTIVE VALUE                0.7000
+
+ RESOURCE USAGE, LIMIT          0.000 10000000000.000
+ ITERATION COUNT, LIMIT         0    2147483647
+*** This solver runs with a community license.
+--- GMO setup time: 0.00s
+--- GMO memory 0.50 Mb (peak 0.50 Mb)
+--- Dictionary memory 0.00 Mb
+--- Cplex 22.1.1.0 link memory 0.00 Mb (peak 0.00 Mb)
+--- Starting Cplex
+
+
+--- LP status (1): optimal.
+--- Cplex Time: 0.00sec (det. 0.00 ticks)
+
+
+Optimal solution found
+Objective:            0.700000
+
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU Coste_de_~          .              .              .            -1.0000      
+---- EQU Mano_de_o~          .              .              .             EPS         
+---- EQU Porcentaj~          .              .              .             EPS         
+---- EQU Limite_ma~        -INF            3.5000        15.0000          .          
+---- EQU Limite_le~        -INF             .             3.0000          .          
+---- EQU Contenido~         0.3500         0.3500        +INF            2.0000      
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR x1                  .              .            +INF            0.1400      
+---- VAR x2                  .             1.7500        +INF             .          
+---- VAR z1                -INF            0.7000        +INF             .          
+---- VAR z2                -INF            3.5000        +INF             .          
+---- VAR z3                -INF            0.3500        +INF             .          
+
+  x1  Cantidad de leche de cabra utilizada en la producci처n del queso
+  x2  Cantidad de leche de oveja utilizada en la producci처n del queso
+  z1  Coste de producci처n
+  z2  Mano de obra
+  z3  Porcentaje de grasa
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+GAMS 45.7.0  64fbf3ce Jan 18, 2024          WEX-WEI x86 64bit/MS Windows - 04/04/24 20:48:14 Page 7
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+E x e c u t i o n
+
+
+----     47 VARIABLE z1.L                  =        0.700  Coste de producci처n
+            VARIABLE x1.L                  =        0.000  Cantidad de leche de cabra utilizada en la producci처n del queso
+            VARIABLE x2.L                  =        1.750  Cantidad de leche de oveja utilizada en la producci처n del queso
+GAMS 45.7.0  64fbf3ce Jan 18, 2024          WEX-WEI x86 64bit/MS Windows - 04/04/24 20:48:14 Page 8
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Equation Listing    SOLVE Queso Using MIP From line 48
+
+
+---- Coste_de_produccion  =E=  
+
+Coste_de_produccion..  0.3*x1 + 0.4*x2 - z1 =E= 0 ; (LHS = 0)
+     
+
+---- Mano_de_obra_total  =E=  
+
+Mano_de_obra_total..  4*x1 + 2*x2 - z2 =E= 0 ; (LHS = 0)
+     
+
+---- Porcentaje_de_grasa  =E=  
+
+Porcentaje_de_grasa..  0.08*x1 + 0.2*x2 - z3 =E= 0 ; (LHS = 0)
+     
+
+---- Limite_mano_de_obra  =L=  
+
+Limite_mano_de_obra..  4*x1 + 2*x2 =L= 15 ; (LHS = 3.5)
+     
+
+---- Limite_leche_cabra  =L=  
+
+Limite_leche_cabra..  x1 =L= 3 ; (LHS = 0)
+     
+
+---- Contenido_grasa_minimo  =G=  
+
+Contenido_grasa_minimo..  0.08*x1 + 0.2*x2 =G= 0.35 ; (LHS = 0.35)
+     
+GAMS 45.7.0  64fbf3ce Jan 18, 2024          WEX-WEI x86 64bit/MS Windows - 04/04/24 20:48:14 Page 9
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Column Listing      SOLVE Queso Using MIP From line 48
+
+
+---- x1  Cantidad de leche de cabra utilizada en la producci처n del queso
+
+x1
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0.14)
+        0.3     Coste_de_produccion
+        4       Mano_de_obra_total
+        0.08    Porcentaje_de_grasa
+        4       Limite_mano_de_obra
+        1       Limite_leche_cabra
+        0.08    Contenido_grasa_minimo
+
+
+---- x2  Cantidad de leche de oveja utilizada en la producci처n del queso
+
+x2
+                (.LO, .L, .UP, .M = 0, 1.75, +INF, 0)
+        0.4     Coste_de_produccion
+        2       Mano_de_obra_total
+        0.2     Porcentaje_de_grasa
+        2       Limite_mano_de_obra
+        0.2     Contenido_grasa_minimo
+
+
+---- z1  Coste de producci처n
+
+z1
+                (.LO, .L, .UP, .M = -INF, 0.7, +INF, 0)
+       -1       Coste_de_produccion
+
+
+---- z2  Mano de obra
+
+z2
+                (.LO, .L, .UP, .M = -INF, 3.5, +INF, 0)
+       -1       Mano_de_obra_total
+
+
+---- z3  Porcentaje de grasa
+
+z3
+                (.LO, .L, .UP, .M = -INF, 0.35, +INF, 0)
+       -1       Porcentaje_de_grasa
+
+GAMS 45.7.0  64fbf3ce Jan 18, 2024          WEX-WEI x86 64bit/MS Windows - 04/04/24 20:48:14 Page 10
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Range Statistics    SOLVE Queso Using MIP From line 48
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [ 3.500E-01, 1.500E+01] - Zero values observed as well
+Bound     [min, max] : [        NA,        NA] - Zero values observed as well
+Matrix    [min, max] : [ 8.000E-02, 4.000E+00]
+
+GAMS 45.7.0  64fbf3ce Jan 18, 2024          WEX-WEI x86 64bit/MS Windows - 04/04/24 20:48:14 Page 11
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Model Statistics    SOLVE Queso Using MIP From line 48
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           6     SINGLE EQUATIONS            6
+BLOCKS OF VARIABLES           5     SINGLE VARIABLES            5
+NON ZERO ELEMENTS            14
+
+
+GENERATION TIME      =        0.000 SECONDS      4 MB  45.7.0 64fbf3ce WEX-WEI
+GAMS 45.7.0  64fbf3ce Jan 18, 2024          WEX-WEI x86 64bit/MS Windows - 04/04/24 20:48:14 Page 12
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Solution Report     SOLVE Queso Using MIP From line 48
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   Queso               OBJECTIVE  z2
+     TYPE    MIP                 DIRECTION  MINIMIZE
+     SOLVER  CPLEX               FROM LINE  48
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      1 Optimal
+**** OBJECTIVE VALUE                3.5000
+
+ RESOURCE USAGE, LIMIT          0.000 10000000000.000
+ ITERATION COUNT, LIMIT         0    2147483647
+*** This solver runs with a community license.
+--- GMO setup time: 0.00s
+--- GMO memory 0.50 Mb (peak 0.50 Mb)
+--- Dictionary memory 0.00 Mb
+--- Cplex 22.1.1.0 link memory 0.00 Mb (peak 0.00 Mb)
+--- Starting Cplex
+
+
+--- LP status (1): optimal.
+--- Cplex Time: 0.00sec (det. 0.01 ticks)
+
+
+Optimal solution found
+Objective:            3.500000
+
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU Coste_de_~          .              .              .             EPS         
+---- EQU Mano_de_o~          .              .              .            -1.0000      
+---- EQU Porcentaj~          .              .              .             EPS         
+---- EQU Limite_ma~        -INF            3.5000        15.0000          .          
+---- EQU Limite_le~        -INF             .             3.0000          .          
+---- EQU Contenido~         0.3500         0.3500        +INF           10.0000      
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR x1                  .              .            +INF            3.2000      
+---- VAR x2                  .             1.7500        +INF             .          
+---- VAR z1                -INF            0.7000        +INF             .          
+---- VAR z2                -INF            3.5000        +INF             .          
+---- VAR z3                -INF            0.3500        +INF             .          
+
+  x1  Cantidad de leche de cabra utilizada en la producci처n del queso
+  x2  Cantidad de leche de oveja utilizada en la producci처n del queso
+  z1  Coste de producci처n
+  z2  Mano de obra
+  z3  Porcentaje de grasa
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+GAMS 45.7.0  64fbf3ce Jan 18, 2024          WEX-WEI x86 64bit/MS Windows - 04/04/24 20:48:14 Page 13
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+E x e c u t i o n
+
+
+----     49 VARIABLE z2.L                  =        3.500  Mano de obra
+            VARIABLE x1.L                  =        0.000  Cantidad de leche de cabra utilizada en la producci처n del queso
+            VARIABLE x2.L                  =        1.750  Cantidad de leche de oveja utilizada en la producci처n del queso
+GAMS 45.7.0  64fbf3ce Jan 18, 2024          WEX-WEI x86 64bit/MS Windows - 04/04/24 20:48:14 Page 14
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Equation Listing    SOLVE Queso Using MIP From line 50
+
+
+---- Coste_de_produccion  =E=  
+
+Coste_de_produccion..  0.3*x1 + 0.4*x2 - z1 =E= 0 ; (LHS = 0)
+     
+
+---- Mano_de_obra_total  =E=  
+
+Mano_de_obra_total..  4*x1 + 2*x2 - z2 =E= 0 ; (LHS = 0)
+     
+
+---- Porcentaje_de_grasa  =E=  
+
+Porcentaje_de_grasa..  0.08*x1 + 0.2*x2 - z3 =E= 0 ; (LHS = 0)
+     
+
+---- Limite_mano_de_obra  =L=  
+
+Limite_mano_de_obra..  4*x1 + 2*x2 =L= 15 ; (LHS = 3.5)
+     
+
+---- Limite_leche_cabra  =L=  
+
+Limite_leche_cabra..  x1 =L= 3 ; (LHS = 0)
+     
+
+---- Contenido_grasa_minimo  =G=  
+
+Contenido_grasa_minimo..  0.08*x1 + 0.2*x2 =G= 0.35 ; (LHS = 0.35)
+     
+GAMS 45.7.0  64fbf3ce Jan 18, 2024          WEX-WEI x86 64bit/MS Windows - 04/04/24 20:48:14 Page 15
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Column Listing      SOLVE Queso Using MIP From line 50
+
+
+---- x1  Cantidad de leche de cabra utilizada en la producci처n del queso
+
+x1
+                (.LO, .L, .UP, .M = 0, 0, +INF, 3.2)
+        0.3     Coste_de_produccion
+        4       Mano_de_obra_total
+        0.08    Porcentaje_de_grasa
+        4       Limite_mano_de_obra
+        1       Limite_leche_cabra
+        0.08    Contenido_grasa_minimo
+
+
+---- x2  Cantidad de leche de oveja utilizada en la producci처n del queso
+
+x2
+                (.LO, .L, .UP, .M = 0, 1.75, +INF, 0)
+        0.4     Coste_de_produccion
+        2       Mano_de_obra_total
+        0.2     Porcentaje_de_grasa
+        2       Limite_mano_de_obra
+        0.2     Contenido_grasa_minimo
+
+
+---- z1  Coste de producci처n
+
+z1
+                (.LO, .L, .UP, .M = -INF, 0.7, +INF, 0)
+       -1       Coste_de_produccion
+
+
+---- z2  Mano de obra
+
+z2
+                (.LO, .L, .UP, .M = -INF, 3.5, +INF, 0)
+       -1       Mano_de_obra_total
+
+
+---- z3  Porcentaje de grasa
+
+z3
+                (.LO, .L, .UP, .M = -INF, 0.35, +INF, 0)
+       -1       Porcentaje_de_grasa
+
+GAMS 45.7.0  64fbf3ce Jan 18, 2024          WEX-WEI x86 64bit/MS Windows - 04/04/24 20:48:14 Page 16
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Range Statistics    SOLVE Queso Using MIP From line 50
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [ 3.500E-01, 1.500E+01] - Zero values observed as well
+Bound     [min, max] : [        NA,        NA] - Zero values observed as well
+Matrix    [min, max] : [ 8.000E-02, 4.000E+00]
+
+GAMS 45.7.0  64fbf3ce Jan 18, 2024          WEX-WEI x86 64bit/MS Windows - 04/04/24 20:48:14 Page 17
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Model Statistics    SOLVE Queso Using MIP From line 50
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           6     SINGLE EQUATIONS            6
+BLOCKS OF VARIABLES           5     SINGLE VARIABLES            5
+NON ZERO ELEMENTS            14
+
+
+GENERATION TIME      =        0.016 SECONDS      4 MB  45.7.0 64fbf3ce WEX-WEI
+GAMS 45.7.0  64fbf3ce Jan 18, 2024          WEX-WEI x86 64bit/MS Windows - 04/04/24 20:48:14 Page 18
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Solution Report     SOLVE Queso Using MIP From line 50
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   Queso               OBJECTIVE  z3
+     TYPE    MIP                 DIRECTION  MAXIMIZE
+     SOLVER  CPLEX               FROM LINE  50
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      1 Optimal
+**** OBJECTIVE VALUE                1.5000
+
+ RESOURCE USAGE, LIMIT          0.016 10000000000.000
+ ITERATION COUNT, LIMIT         0    2147483647
+*** This solver runs with a community license.
+--- GMO setup time: 0.00s
+--- GMO memory 0.50 Mb (peak 0.50 Mb)
+--- Dictionary memory 0.00 Mb
+--- Cplex 22.1.1.0 link memory 0.00 Mb (peak 0.00 Mb)
+--- Starting Cplex
+
+
+--- LP status (1): optimal.
+--- Cplex Time: 0.02sec (det. 0.01 ticks)
+
+
+Optimal solution found
+Objective:            1.500000
+
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU Coste_de_~          .              .              .             EPS         
+---- EQU Mano_de_o~          .              .              .             EPS         
+---- EQU Porcentaj~          .              .              .            -1.0000      
+---- EQU Limite_ma~        -INF           15.0000        15.0000         0.1000      
+---- EQU Limite_le~        -INF             .             3.0000          .          
+---- EQU Contenido~         0.3500         1.5000        +INF             .          
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR x1                  .              .            +INF           -0.3200      
+---- VAR x2                  .             7.5000        +INF             .          
+---- VAR z1                -INF            3.0000        +INF             .          
+---- VAR z2                -INF           15.0000        +INF             .          
+---- VAR z3                -INF            1.5000        +INF             .          
+
+  x1  Cantidad de leche de cabra utilizada en la producci처n del queso
+  x2  Cantidad de leche de oveja utilizada en la producci처n del queso
+  z1  Coste de producci처n
+  z2  Mano de obra
+  z3  Porcentaje de grasa
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+GAMS 45.7.0  64fbf3ce Jan 18, 2024          WEX-WEI x86 64bit/MS Windows - 04/04/24 20:48:14 Page 19
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+E x e c u t i o n
+
+
+----     51 VARIABLE z3.L                  =        1.500  Porcentaje de grasa
+            VARIABLE x1.L                  =        0.000  Cantidad de leche de cabra utilizada en la producci처n del queso
+            VARIABLE x2.L                  =        7.500  Cantidad de leche de oveja utilizada en la producci처n del queso
+
+
+EXECUTION TIME       =        0.078 SECONDS      4 MB  45.7.0 64fbf3ce WEX-WEI
+
+
+USER: Course License                                 S240202|0002AO-GEN
+      University Rey Juan Carlos, Infomation Technology         DCE3239
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      C:\2�\2� cuatri\MOEG\Practicas\GAMS\Practica 2\multiobjetivo.gms
+Output     C:\2�\2� cuatri\MOEG\Practicas\GAMS\Practica 2\multiobjetivo.lst
